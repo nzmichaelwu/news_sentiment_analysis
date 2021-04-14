@@ -1,8 +1,10 @@
 # Import libraries
 from webcrawler import news_crawler
+from webcrawler import historical_price
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
+import datetime
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -16,9 +18,14 @@ pd.options.display.max_colwidth = 200
 
 # initialise variables
 base_url = 'https://finviz.com/quote.ashx?t='
+yahoo_finance = 'https://finance.yahoo.com/'
 
 # top 10 tech stocks in US, most of them would have been impacted during Covid one way or another
 tickers = ['AMZN', 'AAPL', 'MSFT', 'INTC', 'AMD', 'DIS', 'NFLX', 'FB', 'TWTR', 'GOOG']
+
+# need to split the ticker list into 2 because yahoo finance has a limit on scraping in one session
+tickers_list_1 = ['AMZN', 'AAPL', 'MSFT', 'INTC', 'AMD']
+tickers_list_2 = ['DIS', 'NFLX', 'FB', 'TWTR', 'GOOG']
 
 stop_words = set(stopwords.words('english'))
 
@@ -27,6 +34,10 @@ news_tables = {}
 # get news headlines
 news_tables = news_crawler(base_url, tickers)
 
+# get historical price
+hist_price_1 = historical_price(yahoo_finance, tickers_list_1)
+hist_price_2 = historical_price(yahoo_finance, tickers_list_2)
+df_hist_price = pd.concat([hist_price_1, hist_price_2]).reset_index(drop=True)
 
 # extract news
 def extract_news(news_tables):
@@ -85,6 +96,15 @@ def preprocess_news_text(news):
 
 df_news['news_cleaned'] = df_news['text'].apply(preprocess_news_text)
 
+# function to convert string to datetime
+def to_date(dates):
+    for date in dates:
+
+
+list_of_dates = df_news['date'].unique().tolist()
+df_hist_price_mod = df_hist_price[df_hist_price['Date'].isin(list_of_dates)]
+
+
 # NLP task 1 - sentiment analysis
 sid = SentimentIntensityAnalyzer()
 
@@ -103,3 +123,27 @@ def get_sentiment(compound):
 
 
 df_news_sentiment['sentiment'] = df_news_sentiment['compound'].apply(get_sentiment)
+
+
+# NLP task 2 - information extraction (keyword extraction)
+news_corpus = df_news_sentiment['news_cleaned']
+
+def extract_keywords(news_corpus):
+    vectorizer = TfidfVectorizer(use_idf=True)
+    news_vectors = vectorizer.fit_transform(news_corpus)
+
+    keyword_dict = {}
+    keywords_list = []
+
+    for index in range(0, len(news_corpus)):
+        vector = news_vectors[index]
+
+        for i in range(len(vectorizer.get_feature_names())):
+            keyword_dict[vectorizer.get_feature_names()[i]] = vector.T.todense()[i].tolist()[0][0]
+
+        keyword_dict = {k: v for k, v in keyword_dict.items() if v != 0.0}
+        keywords_list.append(keyword_dict)
+
+    return keywords_list
+
+test = extract_keywords(news_corpus)
