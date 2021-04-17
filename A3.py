@@ -219,7 +219,7 @@ for ticker in tickers:
 
     df_plot = pd.merge(df_sent_avg, df_hist_price, left_on='date', right_on='Date', how="left") \
         .drop(columns=['Date']) \
-        .fillna({'Ticker': "AMZN"}) \
+        .fillna({'Ticker': ticker}) \
         .set_index('date') \
         .interpolate(method="time") \
         .reset_index()

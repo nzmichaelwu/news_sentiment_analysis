@@ -6,6 +6,7 @@ from selenium import webdriver
 import time
 import pandas as pd
 
+
 # function to extract news for stock ticker
 def news_crawler(base_url, tickers):
     news_tables = {}
