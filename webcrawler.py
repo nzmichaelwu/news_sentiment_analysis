@@ -45,14 +45,15 @@ def historical_price(url, tickers):
         driver.find_element_by_xpath("//button[@id= 'header-desktop-search-button']").click()
         time.sleep(2)
 
-        # Driver clicks on Historical Data tab and sleeps for 3 seconds
+        # Driver clicks on Historical Data tab and sleeps for 5 seconds
         driver.find_element_by_xpath("//span[text() = 'Historical Data']").click()
-        time.sleep(3)
+        time.sleep(5)
 
         driver.execute_script("window.scrollBy(0,100)")
         time.sleep(2)
 
         webpage = driver.page_source
+        time.sleep(5)
 
         # start scraping the historical price data
         htmlpage = BeautifulSoup(webpage, 'lxml')
@@ -71,7 +72,7 @@ def historical_price(url, tickers):
                     row_dict["Low"] = values[3].find('span').text.replace(',', '')
                     row_dict["Close"] = values[4].find('span').text.replace(',', '')
                     row_dict["Adj Close"] = values[5].find('span').text.replace(',', '')
-                    row_dict["Volumn"] = values[6].find('span').text.replace(',', '')
+                    row_dict["Volume"] = values[6].find('span').text.replace(',', '')
                 historical_price_data.append(row_dict)
             except:
                 print("Row number: " + str(i))

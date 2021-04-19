@@ -143,6 +143,28 @@ def get_sentiment(compound):
 
 df_news_sentiment['sentiment'] = df_news_sentiment['compound'].apply(get_sentiment)
 
+
+# distribution of sentiments
+def percentage(upper, lower):
+    return 100 * float(upper) / float(lower)
+
+
+positive = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Positive"]),
+                      100)  # % of positive sentiments
+negative = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Negative"]),
+                      100)  # % of negative sentiments
+neutral = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Neutral"]),
+                     100)  # % of neutral sentiments
+
+labels = ['[positive]', '[negative]', '[nutral]']
+sizes = [positive, negative, neutral]
+colors = ['yellowgreen', "gold", "red"]
+chart = plt.pie(sizes, labels=labels, startangle=90, autopct='%.2f%%', shadow=True)
+plt.title("Distribution of News Headlines Sentiments")
+plt.axis("equal")
+plt.tight_layout()
+plt.show()
+
 # NLP task 2 - information extraction (keyword extraction)
 news_corpus = df_news_sentiment['news_cleaned']
 
