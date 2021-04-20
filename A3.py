@@ -48,7 +48,6 @@ try:
 except AttributeError:
     hist_price_2 = historical_price(yahoo_finance, tickers_list_2)
 
-
 df_hist_price = pd.concat([hist_price_1, hist_price_2]) \
     .reset_index(drop=True) \
     .dropna()
@@ -164,7 +163,7 @@ negative = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "N
 neutral = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Neutral"]),
                      100)  # % of neutral sentiments
 
-labels = ['[positive]', '[negative]', '[nutral]']
+labels = ['[positive]', '[negative]', '[neutral]']
 sizes = [positive, negative, neutral]
 colors = ['yellowgreen', "gold", "red"]
 chart = plt.pie(sizes, labels=labels, startangle=90, autopct='%.2f%%', shadow=True)
@@ -213,7 +212,11 @@ def extract_keywords(news_corpus):
     return df_keyword
 
 
+start_time = datetime.datetime.now()
 df_keyword = extract_keywords(news_corpus)
+end_time = datetime.datetime.now()
+
+print("Extracting keywords for the news corpus took " + str(end_time - start_time) + " seconds")
 
 df_sentiment_keyword = pd.concat([df_news_sentiment, df_keyword], axis=1)
 
