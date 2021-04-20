@@ -38,8 +38,16 @@ news_tables = {}
 news_tables = news_crawler(base_url, tickers)
 
 # get historical price
-hist_price_1 = historical_price(yahoo_finance, tickers_list_1)
-hist_price_2 = historical_price(yahoo_finance, tickers_list_2)
+try:
+    hist_price_1 = historical_price(yahoo_finance, tickers_list_1)
+except AttributeError:
+    hist_price_1 = historical_price(yahoo_finance, tickers_list_1)
+
+try:
+    hist_price_2 = historical_price(yahoo_finance, tickers_list_2)
+except AttributeError:
+    hist_price_2 = historical_price(yahoo_finance, tickers_list_2)
+
 
 df_hist_price = pd.concat([hist_price_1, hist_price_2]) \
     .reset_index(drop=True) \
