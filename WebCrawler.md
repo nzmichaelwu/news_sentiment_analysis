@@ -1,9 +1,13 @@
 # Financial News Headline Sentiment Analysis
+
 _Author: Michael Wu, April 2021_
 
 ##**Task 2 - WebCrawler**
+
 ###<u>Part 1</u>
+
 ####_Websites to be consumed_
+
 To perform sentiment analysis on news headlines and identify any relationship between news sentiment and share price of a company, we need to first obtain the news headlines. We used a website called [FINVIZ](https://finviz.com/) as the source for news headlines of our sampled companies. For the scope of this investigation, we selected the top 10 technology listed companies in US, they are:
 
 |**Company Name**            | **Ticker**|
@@ -20,21 +24,26 @@ To perform sentiment analysis on news headlines and identify any relationship be
 |Alphabet Inc.               |GOOG       |
 
 ####_A rationale for extracting the web content_
+
 The website FINVIZ is used because it is a browser-based stock market research platform that makes market information easily accessible to traders and investors. The platform includes a news feed that provides the latest financial news that can help in choosing stocks and making decisions on whether to enter or exit a trade. The news headlines are sourced from some of the leading news providers, such as Bloomberg, MarketWatch, the New York Times, and CNBC and so on. Essentially this website is a centralised repository of news headlines for a company, and thus extracting news headlines from this website is the fundamental step required for us to achieve the objective of this investigation and to perform sentiment analysis on news headlines for the sampled companies.
 
 ####_Content coverage of the data extracted_
+
 As mentioned above, this webcrawler will extract news headlines from FINVIZ for the sampled companies. Below is a screenshot of how the website is structured and the location of the news headlines section for each company.
 
 ![](FINVIZ%20structure.png)
 
 ####_Complexity of the content layout_
+
 The html content layout for this website is fairly straight forward for a webcrawler to scrape. The news headlines section of a company is wrapped inside a table class with the id of “news-table”, and each headline is bounded by the `<tr>` `</tr>` tags. Within this tag, the date and time data is between the first `<td>` `</td>` tags, and the news headline text is in the `<a>` `</a>` tags. Refer to screenshot below when inspecting the html of the website.
 ![FINVIZ html.png](FINVIZ%20html.png)
 
 ####_Website / data copyright considerations_
+
 Lastly, before we start scraping news headlines from FINVIZ, we confirmed there is no copyright limitation based on the privacy section of the website.
 
 ####_Content extractor to export the important aspects of the data_
+
 With the simple html structure of the news headlines table, we utilised the BeautifulSoup package to scrape the html class containing the ‘news-table’ tag. We created a function called “news_crawler” that takes in the base_url and the list of tickers - 10 companies mentioned above - as parameters. The function then go through each ticker in the list, open the relevant html address and look for the ‘news-table’ class. The function then stores the result in a dictionary called “news_tables”, with the key of the dictionary being the ticker code and the corresponding value for each key being the “news_table” read for each ticker using the BeautifulSoup package. Refer to following for the python code for the “news_crawler” function.
 
 ````python
@@ -60,11 +69,13 @@ def news_crawler(base_url, tickers):
 ````
 
 ####_Demonstration of the application of the WebCrawler_
+
 Below are screenshots demonstrating the news_crawler in action.
 
 ![news_crawler_demo.png](news_crawler_demo.png)
 
 ####_Methodology of processing, cleaning, and storing harvested data for NLP task_
+
 Once we obtained the news_tables dictionary that contains all recent financial news headlines in html format for the corresponding sampled companies, we need to extract relevant information such as the ticker code, the date and time of the news headline, and the text of the news headline. To do so, we created a function called “extract_news” that takes in the news_tables dictionary as a parameter. The function then iterate through each news_table (i.e. each item of the news_tables dictionary) and then iterate through all `<tr>` tags in the news_table to extract the following information.<br>
 •	Text of the news headline from tag `<a>` <br>
 •	Date and time of the news headline from tag `<td>` <br>
@@ -139,6 +150,7 @@ list_of_dates = df_news['date'].unique()
 ````
 
 ####_Summary and visualisation of the harvested data_
+
 We then performed an exploratory data analysis on the news dataframe and determined that a total of 1000 news headlines for the sampled companies were scraped. We also determined that the distribution of the word length of the corpus document is relatively normal, based on the frequency distribution plot of the number of words in each news corpus.
 ````python
 import matplotlib.pyplot as plt
@@ -154,18 +166,23 @@ plt.hist(x)
 
 
 ###<u>Part 2</u>
+
 ####_Websites to be consumed_
+
 Another webcrawler was developed as a supplementary to the first webcrawler above. As part of the investigation, we also wanted to identify if there is any relationship between news sentiment and share price, and so we need to obtain historical share price for those sampled companies. We used the [Yahoo Finance](https://finance.yahoo.com/) as the source for historical share price.
 
 ####_A rationale for extracting the web content_
+
 Yahoo Finance is used because it is a free website that contains historical share price information of any listed companies. For our investigation into the relationship between news sentiment and historical share price, a website that contains reliable and easily accessible historical share price is required for us to achieve the object, and Yahoo Finance provides the capability for us to do so.
 
 ####_Content coverage of the data extracted_
+
 Yahoo Finance contains many financial information of a company, one of which is the historical data. The historical data section is a tab on a webpage, and the website is structured per the screenshot below.
 
 ![yahoo finance structure.png](yahoo%20finance%20structure.png)
 
 ####_Complexity of the content layout_
+
 The html content layout for Yahoo Finance is slightly complicated than FINVIZ above, as we need to click the website 3 times to get to the historical data page.
 1.	Input the ticker code
 2.	Click the search button
@@ -175,9 +192,11 @@ Once we navigated to the historical data page of a company, the historical data 
 ![yahoo finance html.png](yahoo%20finance%20html.png)
 
 ####_Website / data copyright considerations_
+
 Lastly, before we start scraping historical share price data from Yahoo Finance, we confirmed there is no copyright limitation based on the privacy section of the website.
 
 ####_Content extractor to export the important aspects of the data and methodology of data processing_
+
 To scrape the historical share price from Yahoo Finance, we utilised the Selenium package and created a Chrome webdriver. We created a function called “historical_price” that takes in the url and the list of tickers (10 companies mentioned above) as parameters. The function first initialise the Chrome webdriver, and then for each ticker in the list of tickers, the webdriver will perform the following steps:
 1.	Open Yahoo Finance
 2.	Enter the ticker into the search box
@@ -267,6 +286,7 @@ def historical_price(url, tickers):
 ````
 
 ####_Demonstration of the application of the WebCrawler_
+
 Below are screenshots demonstrating the historical_price webcrawler in action.
 
 ![historical_price_webcrawler_demo.png](historical_price_webcrawler_demo.png)
