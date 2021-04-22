@@ -25,7 +25,7 @@ The website FINVIZ is used because it is a browser-based stock market research p
 ####_Content coverage of the data extracted_
 As mentioned above, this webcrawler will extract news headlines from FINVIZ for the sampled companies. Below is a screenshot of how the website is structured and the location of the news headlines section for each company.
 
-![FINVIZ structure.png](FINVIZ%20structure.png)
+![](FINVIZ%20structure.png)
 
 ####_Complexity of the content layout_
 The html content layout for this website is fairly straight forward for a webcrawler to scrape. The news headlines section of a company is wrapped inside a table class with the id of “news-table”, and each headline is bounded by the `<tr>` `</tr>` tags. Within this tag, the date and time data is between the first `<td>` `</td>` tags, and the news headline text is in the `<a>` `</a>` tags. Refer to screenshot below when inspecting the html of the website.
