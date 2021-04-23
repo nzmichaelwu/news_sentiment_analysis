@@ -146,6 +146,7 @@ Once we performed our NLP tasks, we performed a preliminary assessment of our NL
 ![nk_sentiment_distribution.png](nk_sentiment_distribution.png)
 
 Whereas for our investigation, for the sampled period between 2021-03-15 and 2021-04-19, we have more positive news sentiments than neutral. Although our sampled period and sampled company size is different to that of the academic paper, one interesting result is that both analysis have found lower amount of negative news sentiments, with ours and the academic paper’s being roughly 17% of the total population. Refer to screenshot for the distribution of news sentiments from our investigation.
+
 ````python
 import plotly.graph_objects as go
 
@@ -156,6 +157,7 @@ def plot_sentiment_dist(positive, negative, neutral):
                                  insidetextorientation='radial')])
     fig.show()
 ````
+
 ![Distribution of Sentiments.png](Distribution%20of%20Sentiments.png)
 
 Furthermore, in the academic paper by Nemes and Kiss, they have determined that financial news do have an impact on stock market shifts, whereby there were times when certain news items have effect to the later movements, and there were times when the news describe a particular shift will enhance stock price changes too. The authors plotted the AMD stock market changes during the study period against the results of different sentiment models. The plot supported the conclusion made by the authors above, see below.

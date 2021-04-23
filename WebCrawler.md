@@ -183,12 +183,13 @@ Yahoo Finance contains many financial information of a company, one of which is 
 
 ####_Complexity of the content layout_
 
-The html content layout for Yahoo Finance is slightly complicated than FINVIZ above, as we need to click the website 3 times to get to the historical data page.
-1.	Input the ticker code
-2.	Click the search button
+The html content layout for Yahoo Finance is slightly complicated than FINVIZ above, as we need to click the website 3 times to get to the historical data page. <br>
+1.	Input the ticker code <br>
+2.	Click the search button <br>
 3.	Click the “Historical Data” tab to navigate to the historical data page
 
 Once we navigated to the historical data page of a company, the historical data table is wrapped in a html tag called “table”, and each daily share price is bounded by the `<tr>` `</tr>` tags. Refer to screenshot below when inspecting the html.
+
 ![yahoo finance html.png](yahoo%20finance%20html.png)
 
 ####_Website / data copyright considerations_
