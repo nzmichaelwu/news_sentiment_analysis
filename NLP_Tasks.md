@@ -147,28 +147,14 @@ Once we performed our NLP tasks, we performed a preliminary assessment of our NL
 
 Whereas for our investigation, for the sampled period between 2021-03-15 and 2021-04-19, we have more positive news sentiments than neutral. Although our sampled period and sampled company size is different to that of the academic paper, one interesting result is that both analysis have found lower amount of negative news sentiments, with ours and the academic paper’s being roughly 17% of the total population. Refer to screenshot for the distribution of news sentiments from our investigation.
 ````python
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
-# distribution of sentiments
-def percentage(upper, lower):
-    return 100 * float(upper) / float(lower)
-
-
-positive = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Positive"]),
-                      100)  # % of positive sentiments
-negative = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Negative"]),
-                      100)  # % of negative sentiments
-neutral = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Neutral"]),
-                     100)  # % of neutral sentiments
-
-labels = ['[positive]', '[negative]', '[neutral]']
-sizes = [positive, negative, neutral]
-colors = ['yellowgreen', "gold", "red"]
-chart = plt.pie(sizes, labels=labels, startangle=90, autopct='%.2f%%', shadow=True)
-plt.title("Distribution of News Headlines Sentiments")
-plt.axis("equal")
-plt.tight_layout()
-plt.show()
+# function to plot sentiment distribution
+def plot_sentiment_dist(positive, negative, neutral):
+    labels = ['[positive]', '[negative]', '[neutral]']
+    fig = go.Figure(data=[go.Pie(labels=labels, values=[positive, negative, neutral], textinfo='label+percent',
+                                 insidetextorientation='radial')])
+    fig.show()
 ````
 ![Distribution of Sentiments.png](Distribution%20of%20Sentiments.png)
 

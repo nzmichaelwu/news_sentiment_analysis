@@ -17,14 +17,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 # set options
 pd.set_option('mode.chained_assignment', None)
-pd.options.display.max_colwidth = 200
+pd.options.display.max_colwidth = 500
 
 
 # this is the main function that execute this program
 def main():
     print("Welcome to News Sentiment Analysis Program.\nProgrammed by Michael Wu")
-    print("...")
-
+    print("...\n")
+    print("----Data Gathering----")
     # initialise variables
     base_url = 'https://finviz.com/quote.ashx?t='
     yahoo_finance = 'https://finance.yahoo.com/'
@@ -41,7 +41,7 @@ def main():
     news_tables = news_crawler(base_url, tickers)
 
     # get historical price
-    print("\nGathering historical share price...")
+    print("Gathering historical share price...")
     try:
         hist_price_1 = historical_price(yahoo_finance, tickers_list_1)
     except AttributeError:
@@ -72,17 +72,19 @@ def main():
     # quick insights on news headlines gathered
     print("\nLet's see some quick insights on the news headlines gathered first...")
     num_news_gathered = len(df_news)
-    print("\nNumber of news headlines scraped is: " + str(num_news_gathered))
+    print("Number of news headlines scraped is: " + str(num_news_gathered))
 
     df_news['word_length'] = [len(word) for word in df_news['text']]
     x = df_news['word_length']
     print("Plotting the distribution of word count for the news corpus...")
     plt.hist(x)
+    plt.show()
 
     # pre-process the news corpus
     df_news['news_cleaned'] = df_news['text'].apply(preprocess_news_text)
 
     # NLP task 1 - sentiment analysis
+    print("\n----NLP Task 1 - Sentiment Analysis----")
     print("Performing the first NLP task - sentiment analysis...")
     sid = SentimentIntensityAnalyzer()
     sentiment = df_news.apply(lambda r: sid.polarity_scores(r['news_cleaned']), axis=1)
@@ -91,7 +93,7 @@ def main():
     df_news_sentiment['sentiment'] = df_news_sentiment['compound'].apply(get_sentiment)
     print(df_news_sentiment.head())
 
-    print("Sentiment analysis completed, see below for the distribution of sentiments...")
+    print("\nSentiment analysis completed, see plot for the distribution of sentiments...")
     positive = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Positive"]),
                           100)  # % of positive sentiments
     negative = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Negative"]),
@@ -99,16 +101,10 @@ def main():
     neutral = percentage(len(df_news_sentiment[df_news_sentiment['sentiment'] == "Neutral"]),
                          100)  # % of neutral sentiments
 
-    labels = ['[positive]', '[negative]', '[neutral]']
-    sizes = [positive, negative, neutral]
-    colors = ['yellowgreen', "gold", "red"]
-    chart = plt.pie(sizes, labels=labels, startangle=90, autopct='%.2f%%', shadow=True)
-    plt.title("Distribution of News Headlines Sentiments")
-    plt.axis("equal")
-    plt.tight_layout()
-    plt.show()
+    plot_sentiment_dist(positive, negative, neutral)
 
     # NLP task 2 - information extraction (keyword extraction)
+    print("\n----NLP Task 2 - Keyword Extraction----")
     print("Performing the second NLP task - keyword extraction...")
     news_corpus = df_news_sentiment['news_cleaned']
 
@@ -118,7 +114,7 @@ def main():
     print("Extracting keywords for the news corpus took " + str(end_time - start_time) + " seconds")
     df_sentiment_keyword = pd.concat([df_news_sentiment, df_keyword], axis=1)
     print("Keyword extraction completed, see below for a random 10 samples in the dataset...")
-    print(df_sentiment_keyword.sample(n=10)[['ticker', 'date', 'news_cleaned', 'keyword']])
+    print(df_sentiment_keyword.sample(n=10)[['sentiment', 'keyword']])
 
     # last part - plot sentiment score vs stock price
     print("Lastly, plotting sentiments against share price for in-scope stocks...")
@@ -196,6 +192,7 @@ def to_date(dates, date_format):
     return converted_dates
 
 
+# get sentiment based on compound score
 def get_sentiment(compound):
     if compound < 0:
         return "Negative"
@@ -209,6 +206,13 @@ def get_sentiment(compound):
 def percentage(upper, lower):
     return 100 * float(upper) / float(lower)
 
+
+# function to plot sentiment distribution
+def plot_sentiment_dist(positive, negative, neutral):
+    labels = ['[positive]', '[negative]', '[neutral]']
+    fig = go.Figure(data=[go.Pie(labels=labels, values=[positive, negative, neutral], textinfo='label+percent',
+                                 insidetextorientation='radial')])
+    fig.show()
 
 # function using TfidfVectorizer to find keywords based on TFIDF score for each news headline in the news_corpus
 def extract_keywords(news_corpus):

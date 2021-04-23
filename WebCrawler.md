@@ -31,7 +31,7 @@ The website FINVIZ is used because it is a browser-based stock market research p
 
 As mentioned above, this webcrawler will extract news headlines from FINVIZ for the sampled companies. Below is a screenshot of how the website is structured and the location of the news headlines section for each company.
 
-![](FINVIZ%20structure.png)
+![FINVIZ structure.png](FINVIZ%20structure.png)
 
 ####_Complexity of the content layout_
 
