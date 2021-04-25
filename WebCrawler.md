@@ -76,16 +76,20 @@ Below are screenshots demonstrating the news_crawler in action.
 
 ####_Methodology of processing, cleaning, and storing harvested data for NLP task_
 
-Once we obtained the news_tables dictionary that contains all recent financial news headlines in html format for the corresponding sampled companies, we need to extract relevant information such as the ticker code, the date and time of the news headline, and the text of the news headline. To do so, we created a function called “extract_news” that takes in the news_tables dictionary as a parameter. The function then iterate through each news_table (i.e. each item of the news_tables dictionary) and then iterate through all `<tr>` tags in the news_table to extract the following information.<br>
+Once we obtained the news_tables dictionary that contains all recent financial news headlines in html format for the corresponding sampled companies, we need to extract relevant information such as the ticker code, the date and time of the news headline, and the text of the news headline. To do so, we created a function called “extract_news” that takes in the news_tables dictionary as a parameter. The function then iterate through each news_table (i.e. each item of the news_tables dictionary) and then iterate through all `<tr>` tags in the news_table to extract the following information.
+
 •	Text of the news headline from tag `<a>` <br>
 •	Date and time of the news headline from tag `<td>` <br>
 •	Ticker code of the company
 
-The function then creates a list to store key information of the news headline, and returns a list of list called “extracted_news”, which contains a list of key information for each news headline. We then converted resultant list into a pandas dataframe called “df_news” with the following columns.<br>
+
+The function then creates a list to store key information of the news headline, and returns a list of list called “extracted_news”, which contains a list of key information for each news headline. We then converted resultant list into a pandas dataframe called “df_news” with the following columns.
+
 •	Ticker  
 •	Date    
 •	Time    
-•	Text    
+•	Text
+
 ````python
 import pandas as pd
 from webcrawler import news_crawler
@@ -128,7 +132,9 @@ extracted_news = extract_news(news_tables)
 
 df_news = pd.DataFrame(extracted_news, columns=['ticker', 'date', 'time', 'text'])
 ````
+
 Lastly, we converted the “Date” column from a string format to a datetime format, as we will need to use this “Date” column for subsetting in later stage of this investigation.
+
 ````python
 import pandas as pd
 import datetime
@@ -161,6 +167,7 @@ num_news_gathered = len(df_news)
 df_news['word_length'] = [len(word) for word in df_news['text']]
 x = df_news['word_length']
 plt.hist(x)
+
 ````
 ![distribution of word count.png](distribution%20of%20word%20count.png)
 
@@ -183,7 +190,8 @@ Yahoo Finance contains many financial information of a company, one of which is 
 
 ####_Complexity of the content layout_
 
-The html content layout for Yahoo Finance is slightly complicated than FINVIZ above, as we need to click the website 3 times to get to the historical data page. <br>
+The html content layout for Yahoo Finance is slightly complicated than FINVIZ above, as we need to click the website 3 times to get to the historical data page.
+
 1.	Input the ticker code <br>
 2.	Click the search button <br>
 3.	Click the “Historical Data” tab to navigate to the historical data page
@@ -199,6 +207,7 @@ Lastly, before we start scraping historical share price data from Yahoo Finance,
 ####_Content extractor to export the important aspects of the data and methodology of data processing_
 
 To scrape the historical share price from Yahoo Finance, we utilised the Selenium package and created a Chrome webdriver. We created a function called “historical_price” that takes in the url and the list of tickers (10 companies mentioned above) as parameters. The function first initialise the Chrome webdriver, and then for each ticker in the list of tickers, the webdriver will perform the following steps:
+
 1.	Open Yahoo Finance
 2.	Enter the ticker into the search box
 3.	Click the search button
@@ -207,14 +216,15 @@ To scrape the historical share price from Yahoo Finance, we utilised the Seleniu
 6.	Saves the webdriver page source into a local variable called webpage
 
 Once the webpage is obtained through the Selenium webdriver, we again used the BeautifulSoup package to scrape the html object to find the “table” for historical price and the daily share price. Then for each daily share price, we look for all values within the `<td>` tag, and extract the following key information by scraping the `<span>` tag within the `<td>` tag. We saved the extracted information into a dictionary called “row_dict”, in which each key-value pair within the dictionary is the below key information of a company for a given date.
-•	Ticker <br>
-•	Date <br>
-•	Open <br>
-•	High <br>
-•	Low <br>
-•	Close <br>
-•	Adj Close <br>
-•	Volume <br>
+
+- Ticker
+- Date
+- Open
+- High
+- Low
+- Close
+- Adj Close
+- Volume
 
 After storing key information into “row_dict”, we append the dictionary into a list called “historical_price_data”. We then repeat this process for the next ticker and so on, until all tickers have been scrapped. Lastly, the function returns a pandas dataframe called “df_hist_price”, which is created from the list of historical price.
 
@@ -325,4 +335,5 @@ df_hist_price[cols] = df_hist_price[cols].apply(pd.to_numeric, errors='coerce')
 df_hist_price['Date'] = to_date(df_hist_price['Date'], '%b %d %Y')
 df_hist_price_mod = df_hist_price[df_hist_price['Date'].isin(list_of_dates)]
 ````
+
 Please refer to main.py and webcrawler.py for the full set of python codes. 

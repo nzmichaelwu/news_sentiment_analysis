@@ -53,6 +53,7 @@ There is no data pre-processing for the second NLP task as it is using the same 
 ####_Hyperparameter_
 
 With the first NLP task of performing sentiment analysis on news headlines, we used the SentimentIntensityAnalyzer object from the VADER package and applied its polarity_scores function on the “news_cleaned” column from df_news dataframe. This generated the positive score, negative score, neutral score, and compound columns for each news headline, which we then join with the df_news dataframe to create a new dataframe called df_news_sentiment. No hyperparameters were used when performing this NLP task, as we were able to perform this NLP task using the standard setting from the VADER package.
+
 ````python
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import pandas as pd
@@ -77,12 +78,13 @@ def get_sentiment(compound):
 df_news_sentiment['sentiment'] = df_news_sentiment['compound'].apply(get_sentiment)
 ````
 
-In terms of the second NLP task where we extract keywords that contribute to the sentiments for each news headline, we used the TfidfVectorizer object from the sklearn.feature_extraction.text package and applied its fit_transform function on the “news_cleaned” column from df_news dataframe. This generated vectors containing TF-IDF scores for each word for each news headline in the news corpus. We then performed the following steps to extract the keywords for each news headlines. Again, no hyperparameters were used when performing this NLP task. <br>
-•	Loop through each news headline in the news corpus <br>
-•	For all words in the corpus, store the score for each word in a dictionary <br>
-•	Remove words that have 0 score (i.e. not important), sort the dictionary, and then add each dictionary of keywords into a list called keywords_list <br>
-•	Loop through the keywords_list and convert the key-value pair of each dictionary in the list into a long string, and then append the string to another list called keyword <br>
-•	Lastly, convert the keyword list into a pandas dataframe, so that the dataframe will only have one column called keyword that contains the keyword and the corresponding score for each index in the news corpus, i.e. for each news headline <br>
+In terms of the second NLP task where we extract keywords that contribute to the sentiments for each news headline, we used the TfidfVectorizer object from the sklearn.feature_extraction.text package and applied its fit_transform function on the “news_cleaned” column from df_news dataframe. This generated vectors containing TF-IDF scores for each word for each news headline in the news corpus. We then performed the following steps to extract the keywords for each news headlines. Again, no hyperparameters were used when performing this NLP task.
+
+- Loop through each news headline in the news corpus
+- For all words in the corpus, store the score for each word in a dictionary
+- Remove words that have 0 score (i.e. not important), sort the dictionary, and then add each dictionary of keywords into a list called keywords_list
+- Loop through the keywords_list and convert the key-value pair of each dictionary in the list into a long string, and then append the string to another list called keyword
+- Lastly, convert the keyword list into a pandas dataframe, so that the dataframe will only have one column called keyword that contains the keyword and the corresponding score for each index in the news corpus, i.e. for each news headline
 
 ````python
 # NLP task 2 - information extraction (keyword extraction)
@@ -212,4 +214,12 @@ for ticker in tickers:
 ````
 ![AMD.png](AMD.png)
 
-Please refer to main.py for the full set of python codes. 
+Please refer to main.py for the full set of python codes. <br>
+
+
+##**References**
+
+1.	Wan, X., Yang, J., Marinov, S. et al. Sentiment correlation in financial news networks and associated market movements. Sci Rep 11, 3062 (2021). https://doi.org/10.1038/s41598-021-82338-6
+2.	Nemes, L., & Kiss, A. (2021). Prediction of stock values changes using sentiment analysis of stock news headlines. Journal of Information and Telecommunication, 1–20. https://doi.org/10.1080/24751839.2021.1874252
+3.	Forss, T., & Sarlin, P. (2018). News-sentiment networks as a company risk indicator. Journal Of Network Theory In Finance, 4(1), 65–86. https://doi.org/10.21314/jntf.2018.039
+4.	Ahuja, R., Chug, A., Kohli, S., Gupta, S., & Ahuja, P. (2019). The Impact of Features Extraction on the Sentiment Analysis. Procedia Computer Science, 152, 341–348. https://doi.org/10.1016/j.procs.2019.05.008
